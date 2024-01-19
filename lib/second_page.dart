@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:getx_state_project/model_person.dart';
+import 'package:getx_state_project/thrid_place.dart';
+import 'package:getx_state_project/user_inheritance.dart';
 
 class SecondPlace extends StatefulWidget {
   const SecondPlace({super.key});
@@ -18,26 +19,27 @@ class SecondPlace extends StatefulWidget {
 
 class _SecondPlaceState extends State<SecondPlace> {
   final _storage = GetStorage();
+  String name = "Maspam";
 
   void checkdata(int rand) async {
     _storage.write(SecondPlace._KEY, SecondPlace.datas[rand]);
-    setState(() { });
-    print(_storage.read(SecondPlace._KEY));
+    setState(() {});
   }
 
   void checkDataObject() async {
     final createObject = Person(name: "Maspam", age: 12);
     _storage.write(SecondPlace._KEYOBJECT, jsonEncode(createObject.toJson()));
-    setState(() {
-      
-    });
+    setState(() {});
   }
+  
+
   @override
   Widget build(BuildContext context) {
     final storage = _storage.read(SecondPlace._KEYOBJECT);
-    final dataasli = Person.fromJson(jsonDecode(storage));
+    final dataasli = (storage != null)
+        ? Person.fromJson(jsonDecode(storage))
+        : Person(name: "kosong", age: 0);
 
-    final Random random = Random();
     return MaterialApp(
       home: Scaffold(
         body: SafeArea(
@@ -45,7 +47,8 @@ class _SecondPlaceState extends State<SecondPlace> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('${dataasli.name} and ${dataasli.age}'),
+                Text(
+                    '${(dataasli.name == null) ? "check" : dataasli.name} and ${(dataasli.age == null) ? "check" : dataasli.age}'),
                 Builder(
                   builder: (context) {
                     return TextButton(
@@ -53,6 +56,17 @@ class _SecondPlaceState extends State<SecondPlace> {
                       child: Text("Check Hasil"),
                     );
                   },
+                ),
+                TextButton(
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ThridPlace();
+                      },
+                    ),
+                  ),
+                  child: Text("goThirdPlage"),
                 ),
               ],
             ),
